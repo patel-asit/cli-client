@@ -17,13 +17,14 @@ async function runApp(){
     let headers = createHeaders(userID, logicToken, dbToken);
     let url = `${API_BASE_URL}/api/Posts/${userID}`;
     
-    // axios.get(url,headers)
-    // .then(function (response) {
-    //   console.log(response.data);
-    // })
-    // .catch(function (error) {
-    //   handleError(error.response.status, error.response.statusText, error.response.data);
-    // });
+    axios.get(url, {headers: headers})
+    .then(function (response) {
+      console.log("\nYour Posts: ");
+      console.log(response.data);
+    })
+    .catch(function (error) {
+      handleError(error.response.status, error.response.statusText, error.response.data);
+    });
   });
 }
 
@@ -37,11 +38,11 @@ async function getLoginCredentials(email, password){
     "password": hashPassword(password)
   };
 
-  axios.post(url, payload, createHeaders())
+  await axios.post(url, payload, createHeaders())
   .then(function (response) {
-    userID = response.data.id;
-    logicToken = response.data.logicToken;
-    dbToken = response.data.dbToken;
+    userID = response.data.user_id;
+    logicToken = response.data.logic_token;
+    dbToken = response.data.db_token;
   })
   .catch(function (error) {
     handleError(error.response.status, error.response.statusText, error.response.data);
@@ -57,9 +58,6 @@ function createHeaders(userID, logicToken, dbToken){
     "X-Db-Token": dbToken ?? "",
     "Authorization": `Bearer ${logicToken}` ?? ""
   };
-
-  console.log("Headers: " + JSON.stringify(headers));
-
   return headers;
 }
 
