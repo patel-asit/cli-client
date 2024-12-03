@@ -1,0 +1,15 @@
+{
+  "name": "cli-client",
+  "version": "1.0.0",
+  "description": "COMP 4350 Final Personal Assignment",
+  "main": "assignment.js",
+  "scripts": {
+    "start": "node assignment.js"
+  },
+  "author": "Asit Patel (asit189@gmail.com)",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.8",
+    "inquirer": "latest"
+  }
+}
