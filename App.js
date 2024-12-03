@@ -1,48 +1,79 @@
-const inquirer = require('inquirer').default;
-const { questions, API_BASE_URL } = require('./constants.js');
+import inquirer from 'inquirer';
+import axios from 'axios';
+import crypto from 'crypto';
+import { questions, API_AUTH_URL, API_BASE_URL } from './constants.js';
 
-var userId = "";
-var token = "";
 
-inquirer.prompt({
-  type: "list",
-  name: "what",
-  message: "What would you like to do?",
-  choices: ['Exit']
-})
-.then((answer) => {
-  if (answer.what === 'Exit') {
-      process.exit();
-  }
-});
-// runApp();
+runApp();
 
-function runApp(){
-  inquirer.prompt(questions).then(answers => {
-    console.log(`${answers.originLat}`);
-    console.log(`${answers.originLng}`);
-    console.log(`${answers.destinationLat}`);
-    console.log(`${answers.destinationLng}`);
-    console.log(`${answers.numSeats}`);
+async function runApp(){
+  inquirer.prompt(questions).then(async answers => {
+    // let userID, logicToken, dbToken;
+
+    console.log("Please wait while we log you in...");
+    let {userID, logicToken, dbToken} = await getLoginCredentials(answers.email, answers.password);
+    console.log("Login successful. Fetching your Posts...");
+
+    let headers = createHeaders(userID, logicToken, dbToken);
+    let url = `${API_BASE_URL}/api/Posts/${userID}`;
+    
+    // axios.get(url,headers)
+    // .then(function (response) {
+    //   console.log(response.data);
+    // })
+    // .catch(function (error) {
+    //   handleError(error.response.status, error.response.statusText, error.response.data);
+    // });
   });
 }
 
-async function login(id, password){
-  let URL = API_BASE_URL + "/api/verifylogincredentials";
-  
+
+async function getLoginCredentials(email, password){
+  let url = API_AUTH_URL + "/api/Users/PasswordLogin";
+  let userID, logicToken, dbToken;
+
   let payload = {
-    "id": id,
-    "password": password
+    "email": email,
+    "password": hashPassword(password)
   };
 
+  axios.post(url, payload, createHeaders())
+  .then(function (response) {
+    userID = response.data.id;
+    logicToken = response.data.logicToken;
+    dbToken = response.data.dbToken;
+  })
+  .catch(function (error) {
+    handleError(error.response.status, error.response.statusText, error.response.data);
+  });
 
+  return {userID, logicToken, dbToken};  
 }
-function searchPost(){};
 
-function getLoginCredentials(id, password){
+function createHeaders(userID, logicToken, dbToken){
+  let headers = {
+    "Content-Type": "application/json",
+    "X-User-ID": userID ?? "",
+    "X-Db-Token": dbToken ?? "",
+    "Authorization": `Bearer ${logicToken}` ?? ""
+  };
 
-};
+  console.log("Headers: " + JSON.stringify(headers));
 
-function createHeaders(){
-  
+  return headers;
+}
+
+function hashPassword(passwordStr){
+  return crypto.createHash('sha256').update(passwordStr).digest('hex');
+}
+
+function handleError(statusCode, statusMessage, responseData){
+  console.log("[Error: " + statusCode + " " + statusMessage + "] " + responseData);
+  if(statusCode == 500 || statusCode == 404){
+    console.log("Please try again later. Exiting...");
+    process.exit(1); // Exit with error
+  }else if(statusCode == 400 || statusCode == 401){
+    console.log("Please try again...");
+    runApp();
+  }
 }
