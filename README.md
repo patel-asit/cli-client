@@ -2,7 +2,7 @@
 
 This is a simple CLI application that touches the backend of [Go Ride sharing app](https://github.com/Go-Ride-Share).
 
-The application will let you log into your account and view your posts.
+This cli applicaiton is implementing a key feature of the Go Ride Sharing app, which is the ability to view your own posts after logging in.
 
 ## Getting Started
 
@@ -20,4 +20,4 @@ You should be able to use email id testapp@email.com and password `12345678` to 
 
 ### Debugging
 
-If the logins fail, you might have to visit the app website and create an account for yourself [here](https://salmon-bay-0bbe0cf0f.5.azurestaticapps.net/signup)
+If the logins fail, you might have to visit the app website and create an account for yourself [here](https://salmon-bay-0bbe0cf0f.5.azurestaticapps.net/signup). And perhaps some posts as well, so that you can view them using this CLI application.
