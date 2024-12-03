@@ -1,36 +1,29 @@
-const API_AUTH_URL = "https://grs-accountmanager-dev.azurewebsites.net";
-const API_BASE_URL = "https://grs-logic-dev.azurewebsites.net";
+export const API_AUTH_URL = "https://grs-accountmanager-dev.azurewebsites.net";
+export const API_BASE_URL = "https://grs-logic-dev.azurewebsites.net";
 
-const questions = [
+export const questions = [
   {
-    type: 'number',
-    name: 'originLat',
-    message: "What is your starting latitude?",
+    type: 'input',
+    name: 'email',
+    message: 'Enter your email:',
+    validate: async (input) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(input)) {
+        return 'Please enter a valid email address. (e.g. abc@email.com)';
+      }
+      return true;
+    }
   },
   {
-    type: 'number',
-    name: 'originLng',
-    message: "what is your starting longitude"
-  },
-  {
-    type: 'number',
-    name: 'destinationLat',
-    message: "what is your destination latitude"
-  },
-  {
-    type: 'number',
-    name: 'destinationLng',
-    message: "what is your destination longitude"
-  },
-  {
-    type: 'number',
-    name: 'numSeats',
-    message: "How many seats do you need?"
-  },
+    type: 'password',
+    name: 'password',
+    mask: '*',
+    message: 'Enter your password:',
+    validate: async (input) => {
+      if (input.length < 8) {
+        return 'Password must be at least 8 characters long';
+      }
+      return true;
+    }
+  }
 ];
-
-module.exports = {
-    questions,
-    API_AUTH_URL,
-    API_BASE_URL,
-};
