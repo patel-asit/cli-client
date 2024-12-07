@@ -1,5 +1,5 @@
-export const API_AUTH_URL = "https://grs-accountmanager-dev.azurewebsites.net";
-export const API_BASE_URL = "https://grs-logic-dev.azurewebsites.net";
+export const API_AUTH_URL = "https://grs-accountmanager.azurewebsites.net";
+export const API_BASE_URL = "https://grs-logic.azurewebsites.net";
 
 export const questions = [
   {
